@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "swirl",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "8e6e9cbf-1cd3-4151-a85b-205f166f19ac"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

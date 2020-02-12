@@ -1,0 +1,17 @@
+{
+  "ver": "1.0.25",
+  "uuid": "3b4f3ad9-9c8f-4509-8d99-e11d011414f0",
+  "compiledShaders": [
+    {
+      "glsl1": {
+        "vert": "\nprecision highp float;\nuniform mediump mat4 cc_matViewProj;\nattribute vec3 a_position;\nattribute lowp vec4 a_color;\nattribute mediump vec2 a_uv0;\nvarying mediump vec2 v_uv0;\nvarying lowp vec4 v_color;\nvoid main () {\n  mat4 mvp;\n  mvp = cc_matViewProj;\n  v_uv0 = a_uv0;\n  v_color = a_color;\n  gl_Position = mvp * vec4(a_position, 1);\n}",
+        "frag": "\nprecision highp float;\nuniform sampler2D texture;\nuniform sampler2D texture2;\nvarying mediump vec2 v_uv0;\nuniform float time;\nvarying lowp vec4 v_color;\nvec4 getFromColor(vec2 uv) {\n  return texture2D(texture, uv);\n}\nvec4 getToColor(vec2 uv) {\n  return texture2D(texture2, uv);\n}\nfloat progress = time;\nuniform float intensity;\nvec4 transition(vec2 uv) {\n    vec4 c1 = vec4(0.0);\n    vec4 c2 = vec4(0.0);\n    float disp = intensity*(0.5-distance(0.5, progress));\n    for (int xi=0; xi<6; xi++)\n    {\n        float x = float(xi) / float(6) - 0.5;\n        for (int yi=0; yi<6; yi++)\n        {\n            float y = float(yi) / float(6) - 0.5;\n            vec2 v = vec2(x,y);\n            float d = disp;\n            c1 += getFromColor( uv + d*v);\n            c2 += getToColor( uv + d*v);\n        }\n    }\n    c1 /= float(6*6);\n    c2 /= float(6*6);\n    return mix(c1, c2, progress);\n}\nvoid main () {\n  gl_FragColor = v_color * transition(v_uv0);\n}"
+      },
+      "glsl3": {
+        "vert": "\nprecision highp float;\nuniform CCGlobal {\n  highp   vec4 cc_time;\n  mediump vec4 cc_screenSize;\n  mediump vec4 cc_screenScale;\n  mediump vec4 cc_nativeSize;\n  highp   mat4 cc_matView;\n  mediump mat4 cc_matViewInv;\n  mediump mat4 cc_matProj;\n  mediump mat4 cc_matProjInv;\n  mediump mat4 cc_matViewProj;\n  mediump mat4 cc_matViewProjInv;\n  mediump vec4 cc_cameraPos;\n};\nuniform CCLocal {\n  mat4 cc_matWorld;\n  mat4 cc_matWorldIT;\n};\nin vec3 a_position;\nin lowp vec4 a_color;\nin mediump vec2 a_uv0;\nout mediump vec2 v_uv0;\nout lowp vec4 v_color;\nvoid main () {\n  mat4 mvp;\n  mvp = cc_matViewProj;\n  v_uv0 = a_uv0;\n  v_color = a_color;\n  gl_Position = mvp * vec4(a_position, 1);\n}",
+        "frag": "\nprecision highp float;\nuniform sampler2D texture;\nuniform sampler2D texture2;\nin mediump vec2 v_uv0;\nuniform Time {\n  float time;\n  float ratio;\n};\nin lowp vec4 v_color;\nvec4 getFromColor(vec2 uv) {\n  return texture(texture, uv);\n}\nvec4 getToColor(vec2 uv) {\n  return texture(texture2, uv);\n}\nfloat progress = time;\nuniform Transition {\n  float intensity;\n};\nvec4 transition(vec2 uv) {\n    vec4 c1 = vec4(0.0);\n    vec4 c2 = vec4(0.0);\n    float disp = intensity*(0.5-distance(0.5, progress));\n    for (int xi=0; xi<6; xi++)\n    {\n        float x = float(xi) / float(6) - 0.5;\n        for (int yi=0; yi<6; yi++)\n        {\n            float y = float(yi) / float(6) - 0.5;\n            vec2 v = vec2(x,y);\n            float d = disp;\n            c1 += getFromColor( uv + d*v);\n            c2 += getToColor( uv + d*v);\n        }\n    }\n    c1 /= float(6*6);\n    c2 /= float(6*6);\n    return mix(c1, c2, progress);\n}\nvoid main () {\n  gl_FragColor = v_color * transition(v_uv0);\n}"
+      }
+    }
+  ],
+  "subMetas": {}
+}

@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "polka-dots-curtain",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "7dbf3e2d-48dc-4b76-b7b9-b70960ec43c9"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

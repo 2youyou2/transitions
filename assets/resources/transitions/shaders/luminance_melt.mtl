@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "luminance_melt",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "ae0ed25e-5232-48da-95c7-7005f86d3fa8"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

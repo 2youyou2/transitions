@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "simple-zoom",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "ab21a7e6-6761-41f8-858c-f916baf5cc25"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

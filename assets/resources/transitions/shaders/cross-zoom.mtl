@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "cross-zoom",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "544a5a79-7f4b-402c-bd62-e75c661592be"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

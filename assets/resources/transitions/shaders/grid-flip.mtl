@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "grid-flip",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "216463c8-132d-45e2-9ed4-8185325c9b9d"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

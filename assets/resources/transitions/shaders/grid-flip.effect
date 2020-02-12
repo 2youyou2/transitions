@@ -1,0 +1,171 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        texture2: { value: white }
+        time: { value: 0 }
+        ratio: { value: 0 }
+        
+        bgcolor: { value: [0.0, 0.0, 0.0, 1.0], editor: { type: color } }
+        size: { value: [4, 4] }
+        pause: { value: 0.1 }
+        dividerWidth: { value: 0.05 }
+        randomness: { value: 0.1 }
+}%
+
+CCProgram transition %{
+
+float progress = time;
+
+uniform Transition {
+  vec4 bgcolor; // = vec4(0.0, 0.0, 0.0, 1.0)
+  vec2 size; // = ivec2(4)
+  float pause; // = 0.1
+  float dividerWidth; // = 0.05
+  float randomness; // = 0.1
+};
+// License: MIT
+// Author: TimDonselaar
+// ported by gre from https://gist.github.com/TimDonselaar/9bcd1c4b5934ba60087bdb55c2ea92e5
+
+ 
+float rand (vec2 co) {
+  return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float getDelta(vec2 p) {
+  vec2 rectanglePos = floor(vec2(size) * p);
+  vec2 rectangleSize = vec2(1.0 / vec2(size).x, 1.0 / vec2(size).y);
+  float top = rectangleSize.y * (rectanglePos.y + 1.0);
+  float bottom = rectangleSize.y * rectanglePos.y;
+  float left = rectangleSize.x * rectanglePos.x;
+  float right = rectangleSize.x * (rectanglePos.x + 1.0);
+  float minX = min(abs(p.x - left), abs(p.x - right));
+  float minY = min(abs(p.y - top), abs(p.y - bottom));
+  return min(minX, minY);
+}
+
+float getDividerSize() {
+  vec2 rectangleSize = vec2(1.0 / vec2(size).x, 1.0 / vec2(size).y);
+  return min(rectangleSize.x, rectangleSize.y) * dividerWidth;
+}
+
+vec4 transition(vec2 p) {
+  if(progress < pause) {
+    float currentProg = progress / pause;
+    float a = 1.0;
+    if(getDelta(p) < getDividerSize()) {
+      a = 1.0 - currentProg;
+    }
+    return mix(bgcolor, getFromColor(p), a);
+  }
+  else if(progress < 1.0 - pause){
+    if(getDelta(p) < getDividerSize()) {
+      return bgcolor;
+    } else {
+      float currentProg = (progress - pause) / (1.0 - pause * 2.0);
+      vec2 q = p;
+      vec2 rectanglePos = floor(vec2(size) * q);
+      
+      float r = rand(rectanglePos) - randomness;
+      float cp = smoothstep(0.0, 1.0 - r, currentProg);
+    
+      float rectangleSize = 1.0 / vec2(size).x;
+      float delta = rectanglePos.x * rectangleSize;
+      float offset = rectangleSize / 2.0 + delta;
+      
+      p.x = (p.x - offset)/abs(cp - 0.5)*0.5 + offset;
+      vec4 a = getFromColor(p);
+      vec4 b = getToColor(p);
+      
+      float s = step(abs(vec2(size).x * (q.x - delta) - 0.5), abs(cp - 0.5));
+      return mix(bgcolor, mix(b, a, step(cp, 0.5)), s);
+    }
+  }
+  else {
+    float currentProg = (progress - 1.0 + pause) / pause;
+    float a = 1.0;
+    if(getDelta(p) < getDividerSize()) {
+      a = currentProg;
+    }
+    return mix(bgcolor, getToColor(p), a);
+  }
+}
+
+
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram fs %{
+
+precision highp float;
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+  float ratio;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture(texture2, uv);
+}
+
+#include <transition>
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%
