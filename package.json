@@ -4,7 +4,7 @@
     },
     "git-deploy": {
         "deploy_dir": "build/web-mobile",
-        "repo": "git@github.com:2youyou2/TheAviator.git"
+        "repo": "git@github.com:2youyou2/transitions.git"
     },
     "devDependencies": {
         "git-deploy": "github:2youyou2/git-deploy"

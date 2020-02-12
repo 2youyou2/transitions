@@ -1,4 +1,4 @@
-if (CC_EDITOR) {
+if (CC_EDITOR && window.Vue) {
 
     Vue.component('transitions', {
 
