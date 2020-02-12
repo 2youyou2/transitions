@@ -1,4 +1,5 @@
 const TipsManager = require('TipsManager');
+const TransitionMaterials = require('transition-materials');
 
 const SceneList = cc.Class({
     extends: cc.Component,
@@ -11,7 +12,6 @@ const SceneList = cc.Class({
         initItemCount: 0,
         scrollView: cc.ScrollView,
         bufferZone: 0, // when item is away from bufferZone, we relocate it
-        searchBlock: cc.Node
     },
 
     createItem: function (x, y, name, url) {
@@ -84,21 +84,16 @@ const SceneList = cc.Class({
         }
         let y = 0;
         this.node.height = (this.sceneList.length + 1) * 50;
-        let initItemCount = Math.min(this.initItemCount, this.sceneList.length);
+        let initItemCount = Math.min(this.initItemCount, TransitionMaterials.length);
         for (let i = 0; i < initItemCount; ++i) {
             let item = cc.instantiate(this.itemPrefab).getComponent('ListItem');
-            let itemInfo = this.sceneList[i];
+            let material = TransitionMaterials[i];
             item.init(this.menu);
             this.node.addChild(item.node);
             y -= 50;
-            item.updateItem (i, y, itemInfo.name, itemInfo.url);
+            item.updateItem(i, y, material.name);
             this.itemList.push(item);
         }
-
-        // get item list in order to check the loadScene condition
-        let searchComp = this.searchBlock.getComponent('SearchBlock');
-        searchComp.init(this.menu);
-        searchComp.setItemList(this.sceneList);
     },
 
     getPositionInView: function (item) { // get item position in scrollview's node space

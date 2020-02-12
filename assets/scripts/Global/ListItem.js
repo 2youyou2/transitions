@@ -9,7 +9,6 @@ cc.Class({
             default: null,
             type: cc.Label
         },
-        url: '',
         bg: cc.Sprite,
         btn: cc.Button
     },
@@ -21,19 +20,13 @@ cc.Class({
     },
 
     loadExample () {
-        if (this.url && TipsManager.hasSupport(this.__name)) {
-            this.menu.loadScene(this.url);
-        }
+        this.menu.loadScene(0, this.index);
     },
 
-    updateItem (idx, y, name, url) {
-        let isDir = !url;
+    updateItem (idx, y, name) {
         this.index = idx;
         this.node.y = y;
-        this.node.x = isDir ? 50 : 100;
+        this.node.x = 100;
         this.label.string = this.__name = name;
-        this.url = url;
-        this.bg.enabled = !isDir;
-        this.btn.interactable = !isDir;
     }
 });
