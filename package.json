@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "deploy": "git-deploy"
+    },
+    "git-deploy": {
+        "deploy_dir": "build/web-mobile",
+        "repo": "git@github.com:2youyou2/TheAviator.git"
+    },
+    "devDependencies": {
+        "git-deploy": "github:2youyou2/git-deploy"
+    }
+}
