@@ -20,3 +20,13 @@ this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this
 # shaders
 
 All shaders can be found in the folder: [assets/resources/transitions/shaders](https://github.com/2youyou2/transitions/tree/master/assets/resources/transitions/shaders)
+
+Builtin uniforms: 
+```js
+{
+  texture: { value: white }
+  texture2: { value: white }
+  time: { value: 0 }
+  ratio: { value: 1 }
+}
+```
