@@ -97,10 +97,18 @@ cc.Class({
     },
 
     nextScene () {
-        this.loadScene(++this.currentSceneIndex);
+        ++this.currentSceneIndex;
+        if (this.currentSceneIndex >= scenes.length) {
+            this.currentSceneIndex = 0;
+        }
+        this.loadScene(this.currentSceneIndex);
     },
 
     prevScene () {
-        this.loadScene(--this.currentSceneIndex);
+        --this.currentSceneIndex;
+        if (this.currentSceneIndex < 0) {
+            this.currentSceneIndex = scenes.length - 1;
+        }
+        this.loadScene(this.currentSceneIndex);
     },
 });
