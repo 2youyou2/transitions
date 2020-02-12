@@ -1,0 +1,41 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "show menu",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 1,
+  "sample": 1,
+  "speed": 3,
+  "wrapMode": "0",
+  "curveData": {
+    "props": {
+      "y": [
+        {
+          "frame": 0,
+          "value": 8
+        },
+        {
+          "frame": 1,
+          "value": -116
+        }
+      ]
+    },
+    "paths": {
+      "eject btn": {
+        "props": {
+          "angle": [
+            {
+              "frame": 0,
+              "value": 90
+            },
+            {
+              "frame": 1,
+              "value": -90
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": []
+}

@@ -1,0 +1,167 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        texture2: { value: white }
+        time: { value: 0 }
+        ratio: { value: 1 }
+        steps: { value: 50.0 }
+        horizontalHexagons: { value: 20.0 }
+}%
+
+CCProgram transition %{
+
+// Author: Fernando Kuteken
+// License: MIT
+// Hexagonal math from: http://www.redblobgames.com/grids/hexagons/
+
+
+uniform Transition {
+  float steps; // = 50;
+  float horizontalHexagons; //= 20;
+};
+
+struct Hexagon {
+  float q;
+  float r;
+  float s;
+};
+
+Hexagon createHexagon(float q, float r){
+  Hexagon hex;
+  hex.q = q;
+  hex.r = r;
+  hex.s = -q - r;
+  return hex;
+}
+
+Hexagon roundHexagon(Hexagon hex){
+  
+  float q = floor(hex.q + 0.5);
+  float r = floor(hex.r + 0.5);
+  float s = floor(hex.s + 0.5);
+
+  float deltaQ = abs(q - hex.q);
+  float deltaR = abs(r - hex.r);
+  float deltaS = abs(s - hex.s);
+
+  if (deltaQ > deltaR && deltaQ > deltaS)
+    q = -r - s;
+  else if (deltaR > deltaS)
+    r = -q - s;
+  else
+    s = -q - r;
+
+  return createHexagon(q, r);
+}
+
+Hexagon hexagonFromPoint(vec2 point, float size) {
+  
+  point.y /= ratio;
+  point = (point - 0.5) / size;
+  
+  float q = (sqrt(3.0) / 3.0) * point.x + (-1.0 / 3.0) * point.y;
+  float r = 0.0 * point.x + 2.0 / 3.0 * point.y;
+
+  Hexagon hex = createHexagon(q, r);
+  return roundHexagon(hex);
+  
+}
+
+vec2 pointFromHexagon(Hexagon hex, float size) {
+  
+  float x = (sqrt(3.0) * hex.q + (sqrt(3.0) / 2.0) * hex.r) * size + 0.5;
+  float y = (0.0 * hex.q + (3.0 / 2.0) * hex.r) * size + 0.5;
+  
+  return vec2(x, y * ratio);
+}
+
+vec4 transition (vec2 uv) {
+  
+  float dist = 2.0 * min(time, 1.0 - time);
+  dist = steps > 0.0 ? ceil(dist * steps) / steps : dist;
+  
+  float size = (sqrt(3.0) / 3.0) * dist / horizontalHexagons;
+  
+  vec2 point = dist > 0.0 ? pointFromHexagon(hexagonFromPoint(uv, size), size) : uv;
+
+  return mix(getFromColor(point), getToColor(point), time);
+  
+}
+
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram fs %{
+
+precision highp float;
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+  float ratio;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture2D(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture2D(texture2, uv);
+}
+
+#include <transition>
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%

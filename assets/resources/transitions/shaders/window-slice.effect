@@ -1,0 +1,98 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        texture2: { value: white }
+        time: { value: 0 }
+        count: { value: 10 }
+        smoothness: { value: 10 }
+}%
+
+CCProgram transition %{
+
+uniform Transition {
+  float count; // = 10.0
+  float smoothness; // = 0.5
+};
+
+vec4 transition (vec2 p) {
+  float pr = smoothstep(-smoothness, 0.0, p.x - time * (1.0 + smoothness));
+  float s = step(pr, fract(count * p.x));
+  return mix(getFromColor(p), getToColor(p), s);
+}
+
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram fs %{
+
+precision highp float;
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture2D(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture2D(texture2, uv);
+}
+
+#include <transition>
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%
