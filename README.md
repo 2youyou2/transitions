@@ -16,3 +16,7 @@ example:
 // cc.director.loadScene(url, this.onLoadSceneFinish.bind(this));
 this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this.onLoadSceneFinish.bind(this));
 ```
+
+# shaders
+
+All shaders can be found in the folder: [assets/resources/transitions/shaders](https://github.com/2youyou2/transitions/tree/master/assets/resources/transitions/shaders)
