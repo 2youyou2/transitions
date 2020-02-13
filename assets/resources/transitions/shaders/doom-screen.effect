@@ -1,0 +1,151 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        texture2: { value: white }
+        time: { value: 0 }
+        ratio: { value: 0 }
+        bars: { value: 30 }
+        amplitude: { value: 2 }
+        noise: { value: 0.1 }
+        frequency: { value: 0.5 }
+        dripScale: { value: 0.5 }
+}%
+
+CCProgram transition %{
+
+float progress = time;
+
+uniform Transition {
+  // Number of total bars/columns
+  float bars; // = 30
+
+  // Multiplier for speed ratio. 0 = no variation when going down, higher = some elements go much faster
+  float amplitude; // = 2
+
+  // Further variations in speed. 0 = no noise, 1 = super noisy (ignore frequency)
+  float noise; // = 0.1
+
+  // Speed variation horizontally. the bigger the value, the shorter the waves
+  float frequency; // = 0.5
+
+  // How much the bars seem to "run" from the middle of the screen first (sticking to the sides). 0 = no drip, 1 = curved drip
+  float dripScale; // = 0.5
+};
+// Author: Zeh Fernando
+// License: MIT
+
+
+// The code proper --------
+
+float rand(int num) {
+  return fract(mod(float(num) * 67123.313, 12.0) * sin(float(num) * 10.3) * cos(float(num)));
+}
+
+float wave(int num) {
+  float fn = float(num) * frequency * 0.1 * float(bars);
+  return cos(fn * 0.5) * cos(fn * 0.13) * sin((fn+10.0) * 0.3) / 2.0 + 0.5;
+}
+
+float drip(int num) {
+  return sin(float(num) / float(bars - 1.0) * 3.141592) * dripScale;
+}
+
+float pos(int num) {
+  return (noise == 0.0 ? wave(num) : mix(wave(num), rand(num), noise)) + (dripScale == 0.0 ? 0.0 : drip(num));
+}
+
+vec4 transition(vec2 uv) {
+  int bar = int(uv.x * (float(bars)));
+  float scale = 1.0 + pos(bar) * amplitude;
+  float phase = progress * scale;
+  float posY = uv.y / vec2(1.0).y;
+  vec2 p;
+  vec4 c;
+  if (phase + posY < 1.0) {
+    p = vec2(uv.x, uv.y + mix(0.0, vec2(1.0).y, phase)) / vec2(1.0).xy;
+    c = getFromColor(p);
+  } else {
+    p = uv.xy / vec2(1.0).xy;
+    c = getToColor(p);
+  }
+
+  // Finally, apply the color
+  return c;
+}
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram fs %{
+
+precision highp float;
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+  float ratio;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture(texture2, uv);
+}
+
+#include <transition>
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%

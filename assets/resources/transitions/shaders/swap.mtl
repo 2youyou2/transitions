@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "swap",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "9be92263-dfaa-47cc-a494-d586bdb1e116"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

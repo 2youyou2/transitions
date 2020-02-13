@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "cube",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "be75d64a-89b2-4c5b-8a46-fc1b6685639c"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

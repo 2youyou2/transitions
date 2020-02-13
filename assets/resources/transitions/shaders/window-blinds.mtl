@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "window-blinds",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "f5ee27cf-8a00-403d-9369-7eb582d9fdd2"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}

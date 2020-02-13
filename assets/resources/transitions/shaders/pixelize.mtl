@@ -1,0 +1,15 @@
+{
+  "__type__": "cc.Material",
+  "_name": "pixelize",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "4628c8d8-7d1a-4fa3-9afe-801eb2c1313d"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {}
+    }
+  }
+}
