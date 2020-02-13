@@ -44,46 +44,8 @@ const SceneList = cc.Class({
 
     // use this for initialization
     initList () {
-        var scenes = cc.game._sceneInfos;
-        var dict = {};
-
-        if (scenes) {
-            for (let i = 0; i < scenes.length; ++i) {
-                let url = scenes[i].url;
-                if (!url.startsWith('db://assets/cases/')) {
-                    continue;
-                }
-                let dirname = cc.path.dirname(url).replace('db://assets/cases/', '');
-                let scenename = cc.path.basename(url, '.fire');
-
-                if (!dirname) dirname = '_root';
-                if (!dict[dirname]) {
-                    dict[dirname] = {};
-                }
-                dict[dirname][scenename] = url;
-            }
-        }
-        else {
-            cc.error('failed to get scene list!');
-        }
-        // compile scene dict to an array
-        let dirs = Object.keys(dict);
-        dirs.sort();
-        for (let i = 0; i < dirs.length; ++i) {
-            this.sceneList.push({
-                name: dirs[i],
-                url: null
-            });
-            let scenenames = Object.keys(dict[dirs[i]]);
-            scenenames.sort();
-            for (let j = 0; j < scenenames.length; ++j) {
-                let name = scenenames[j];
-                let url = dict[dirs[i]][name];
-                this.sceneList.push({ name, url });
-            }
-        }
         let y = 0;
-        this.node.height = (this.sceneList.length + 1) * 50;
+        this.node.height = (TransitionMaterials.length + 1) * 50;
         let initItemCount = Math.min(this.initItemCount, TransitionMaterials.length);
         for (let i = 0; i < initItemCount; ++i) {
             let item = cc.instantiate(this.itemPrefab).getComponent('ListItem');
@@ -121,15 +83,15 @@ const SceneList = cc.Class({
                 // if away from buffer zone and not reaching top of content
                 if (viewPos.y < -buffer && itemNode.y + offset < 0) {
                     let newIdx = item.index - curItemCount;
-                    let newInfo = this.sceneList[newIdx];
-                    item.updateItem(newIdx, itemNode.y + offset, newInfo.name, newInfo.url );
+                    let newInfo = TransitionMaterials[newIdx];
+                    item.updateItem(newIdx, itemNode.y + offset, newInfo.name);
                 }
             } else {
                 // if away from buffer zone and not reaching bottom of content
                 if (viewPos.y > buffer && itemNode.y - offset > -this.node.height) {
                     let newIdx = item.index + curItemCount;
-                    let newInfo = this.sceneList[newIdx];
-                    item.updateItem(newIdx, itemNode.y - offset, newInfo.name, newInfo.url);
+                    let newInfo = TransitionMaterials[newIdx];
+                    item.updateItem(newIdx, itemNode.y - offset, newInfo.name);
                 }
             }
         }
