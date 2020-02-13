@@ -4,6 +4,8 @@ This project is a port of TheAviator based on Cocos Creator 2.3.0.
 
 Online Demo : http://2youyou2.com/transitions
 
+![image](https://user-images.githubusercontent.com/1862402/74397039-b9369880-4e4e-11ea-9fad-e3cbdaf334fc.png)
+
 # usage
 
 ![image](https://user-images.githubusercontent.com/1862402/74312784-49240600-4dad-11ea-9fd4-a6d560d1ed43.png)
