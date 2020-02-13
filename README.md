@@ -1,4 +1,4 @@
-# transitions
+# Transitions
 
 This project is based on Cocos Creator 2.3.0.
 
@@ -6,7 +6,7 @@ Online Demo : http://2youyou2.com/transitions
 
 ![image](https://user-images.githubusercontent.com/1862402/74397039-b9369880-4e4e-11ea-9fad-e3cbdaf334fc.png)
 
-# usage
+# Usage
 
 ![image](https://user-images.githubusercontent.com/1862402/74312784-49240600-4dad-11ea-9fd4-a6d560d1ed43.png)
 
@@ -19,7 +19,7 @@ example:
 this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this.onLoadSceneFinish.bind(this));
 ```
 
-# shaders
+# Shaders
 
 All shaders can be found in the folder: [assets/resources/transitions/shaders](https://github.com/2youyou2/transitions/tree/master/assets/resources/transitions/shaders)
 
