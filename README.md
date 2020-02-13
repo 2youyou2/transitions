@@ -30,3 +30,6 @@ Builtin uniforms:
   ratio: { value: 1 }
 }
 ```
+# Sources
+
+- https://gl-transitions.com/
