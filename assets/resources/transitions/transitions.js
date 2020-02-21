@@ -135,7 +135,6 @@ let Transitions = cc.Class({
 
             this._onLoadFinished = () => {
                 toCamera.targetTexture = originTargetTexture2;
-                this.toCresetCamera = null;
 
                 this._spriteNode.active = false;
                 this._cameraNode.active = false;
@@ -158,16 +157,71 @@ let Transitions = cc.Class({
         return true;
     },
 
+    loadNode (fromCamera, fromRootNode, toCamera, toRootNode, onTransitionFinished) {
+        this.init();
+
+        this._spriteNode.active = true;
+        this._cameraNode.active = true;
+
+        // from 
+        fromCamera = fromCamera && fromCamera.getComponent(cc.Camera);
+        if (!fromCamera) {
+            cc.warn(`Can not find fromCamera with path ${fromCameraPath}`);
+            return;
+        }
+        let originTargetTexture1 = fromCamera.targetTexture;
+        fromCamera.cullingMask &= ~this._camera.cullingMask;
+        fromCamera.targetTexture = this._texture1;
+        fromCamera.node.active = true;
+        fromRootNode.active = true;
+        fromCamera.render(fromRootNode);
+        fromRootNode.active = false;
+        fromCamera.node.active = false;
+        fromCamera.targetTexture = originTargetTexture1;
+
+        // to
+        toCamera = toCamera && toCamera.getComponent(cc.Camera);
+        if (!toCamera) {
+            cc.warn(`Can not find toCamera with path ${toCameraPath}`);
+            return;
+        }
+        toCamera.cullingMask &= ~this._camera.cullingMask;
+        let originTargetTexture2 = toCamera.targetTexture;
+        toCamera.node.active = true;
+        toCamera.targetTexture = this._texture2;
+        toRootNode.active = true;
+        toCamera.render(toRootNode);
+        toRootNode.active = false;
+        toCamera.node.active = false;
+
+        this._camera.depth = toCamera.depth;
+        this._camera.clearFlags = toCamera.clearFlags;
+
+        this._onLoadFinished = () => {
+            toRootNode.active = true;
+            toCamera.node.active = true;
+            toCamera.targetTexture = originTargetTexture2;
+
+            this._spriteNode.active = false;
+            this._cameraNode.active = false;
+
+            onTransitionFinished && onTransitionFinished();
+        }
+
+        this.time = 0;
+        this.loading = true;
+        this._spriteMaterial.setProperty('time', 0);
+    },
+
     update (dt) {
         if (this.loading) {
             this.time += dt;
             if (this.time >= this.transitionTime) {
                 this.time = this.transitionTime;
                 this.loading = false;
-                
-                this.scheduleOnce(() => {
-                    this._onLoadFinished && this._onLoadFinished();
-                }, 0)
+
+                this._onLoadFinished && this._onLoadFinished();
+                this._onLoadFinished = null;
             }
             this._spriteMaterial.setProperty('time', this.time / this.transitionTime);
         }
