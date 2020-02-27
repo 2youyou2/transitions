@@ -15,8 +15,12 @@ Online Demo : http://2youyou2.com/transitions
 3. Use **transitions.loadScene** instead of **cc.director.loadScene**
 example: 
 ```js
+// transitions from scene to other scene
 // cc.director.loadScene(url, this.onLoadSceneFinish.bind(this));
 this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this.onLoadSceneFinish.bind(this));
+
+// transitions from node to other node
+this.transitions.loadNode (fromCamera, fromRootNode, toCamera, toRootNode, onTransitionFinished)
 ```
 
 # Shaders
