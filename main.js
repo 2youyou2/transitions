@@ -155,7 +155,7 @@ window.boot = function () {
         id: 'GameCanvas',
         scenes: settings.scenes,
         debugMode: settings.debug ? cc.debug.DebugMode.INFO : cc.debug.DebugMode.ERROR,
-        showFPS: settings.debug,
+        showFPS: false,//settings.debug,
         frameRate: 60,
         jsList: jsList,
         groupList: settings.groupList,
