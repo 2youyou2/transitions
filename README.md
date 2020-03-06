@@ -14,18 +14,14 @@ Online Demo : http://2youyou2.com/transitions
 2. Select a transition in the Properties Panel.
 3. 
 
-- Transitions from scene to other scene
-
-  example: 
+- Transitions from scene to other scene : 
 ```js
 // Use **transitions.loadScene** instead of **cc.director.loadScene**
 // cc.director.loadScene(url, this.onLoadSceneFinish.bind(this));
 this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this.onLoadSceneFinish.bind(this));
 ```
 
-- Transition from node to other node
-
-  example:
+- Transition from node to other node :
 ```js
 this.transitions.loadNode (fromCamera, fromRootNode, toCamera, toRootNode, onTransitionFinished)
 ```
