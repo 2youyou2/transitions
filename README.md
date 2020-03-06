@@ -15,7 +15,8 @@ Online Demo : http://2youyou2.com/transitions
 3. 
 
 - Transitions from scene to other scene
-example: 
+
+  example: 
 ```js
 // Use **transitions.loadScene** instead of **cc.director.loadScene**
 // cc.director.loadScene(url, this.onLoadSceneFinish.bind(this));
@@ -23,7 +24,8 @@ this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this
 ```
 
 - Transition from node to other node
-example:
+
+  example:
 ```js
 this.transitions.loadNode (fromCamera, fromRootNode, toCamera, toRootNode, onTransitionFinished)
 ```
