@@ -1,6 +1,6 @@
 {
   "__type__": "cc.Material",
-  "_name": "New Material",
+  "_name": "strip",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
@@ -9,7 +9,14 @@
   "_techniqueIndex": 0,
   "_techniqueData": {
     "0": {
-      "defines": {}
+      "defines": {},
+      "props": {
+        "direction": {
+          "__type__": "cc.Vec2",
+          "x": 1,
+          "y": 1
+        }
+      }
     }
   }
 }

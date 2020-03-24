@@ -1,0 +1,185 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  commonPass: &commonPass
+    vert: vs
+    blendState:
+      targets:
+      - blend: true
+    rasterizerState:
+      cullMode: none
+    properties:
+      texture: { value: white }
+      texture2: { value: white }
+      time: { value: 0 }
+      ratio: { value: 0 }
+
+      bgcolor: { value: [0.0, 0.0, 0.0, 1.0], editor: { type: color } }
+      center: { value: [0.5, 0.5] }
+  techniques:
+  - name: circle
+    passes:
+    - <<: *commonPass
+      frag: circle-fs
+  - name: rect
+    passes:
+    - <<: *commonPass
+      frag: rect-fs
+  - name: square
+    passes:
+    - <<: *commonPass
+      frag: square-fs
+  - name: diamond
+    passes:
+    - <<: *commonPass
+      frag: diamond-fs
+}%
+
+CCProgram transition %{
+
+float progress = time;
+
+uniform Transition {
+  vec4 bgcolor; // = 0.1
+  vec2 center;
+};
+
+// License: MIT
+// Author: fkuteken
+// ported by gre from https://gist.github.com/fkuteken/f63e3009c1143950dee9063c3b83fb88
+
+vec2 ratio2 = vec2(1.0, 1.0 / ratio);
+float s = pow(2.0 * abs(progress - 0.5), 3.0);
+
+vec4 transition(vec2 p) {
+  float dist = getDist(p, center, ratio2);
+  return mix(
+    progress < 0.5 ? getFromColor(p) : getToColor(p), // branching is ok here as we statically depend on progress uniform (branching won't change over pixels)
+    bgcolor,
+    step(s, dist)
+  );
+}
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram common-fs %{
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+  float ratio;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture(texture2, uv);
+}
+
+#include <transition>
+
+}%
+
+CCProgram circle-fs %{
+
+precision highp float;
+
+float getDist (vec2 p, vec2 center, vec2 ratio) {
+  return length((vec2(p) - center) * ratio);
+}
+
+#include <common-fs>
+
+}%
+
+
+CCProgram rect-fs %{
+
+precision highp float;
+
+float getDist (vec2 p, vec2 center, vec2 ratio) {
+  vec2 dif = abs(p - center);
+  return max(dif.x, dif.y);
+}
+
+#include <common-fs>
+
+}%
+
+
+CCProgram square-fs %{
+
+precision highp float;
+
+float getDist (vec2 p, vec2 center, vec2 ratio) {
+  vec2 dif = abs((vec2(p) - center) * ratio);
+  return max(dif.x, dif.y);
+}
+
+#include <common-fs>
+
+}%
+
+CCProgram diamond-fs %{
+
+precision highp float;
+
+const float PI = 3.141592653589793;
+float deg = 45.0 / 180. * PI;
+mat2 rotation = mat2(
+  cos(deg), sin(deg),
+  -sin(deg), cos(deg)
+);
+
+float getDist (vec2 p, vec2 center, vec2 ratio) {
+  vec2 dif = abs(rotation * ((p - center) * ratio));
+  return max(dif.x, dif.y);
+}
+
+#include <common-fs>
+
+}%

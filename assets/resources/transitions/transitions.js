@@ -87,6 +87,7 @@ let Transitions = cc.Class({
         let newMaterial = cc.MaterialVariant.create(this._material);
         newMaterial.setProperty('texture2', this._texture2);
         newMaterial.setProperty('ratio', this._texture2.width/this._texture2.height);
+        newMaterial.setProperty('screenSize', new Float32Array([this._texture2.width, this._texture2.height]));
 
         this._sprite.setMaterial(0, newMaterial);
         this._spriteMaterial = newMaterial;
