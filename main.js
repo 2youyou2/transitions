@@ -91,6 +91,7 @@ window.boot = function () {
             }
             cc.view.enableAutoFullScreen([
                 cc.sys.BROWSER_TYPE_BAIDU,
+                cc.sys.BROWSER_TYPE_BAIDU_APP,
                 cc.sys.BROWSER_TYPE_WECHAT,
                 cc.sys.BROWSER_TYPE_MOBILE_QQ,
                 cc.sys.BROWSER_TYPE_MIUI,
@@ -155,7 +156,7 @@ window.boot = function () {
         id: 'GameCanvas',
         scenes: settings.scenes,
         debugMode: settings.debug ? cc.debug.DebugMode.INFO : cc.debug.DebugMode.ERROR,
-        showFPS: false,//settings.debug,
+        showFPS: settings.debug,
         frameRate: 60,
         jsList: jsList,
         groupList: settings.groupList,
