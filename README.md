@@ -12,14 +12,17 @@ Online Demo : http://2youyou2.com/transitions
 
 1. Add transitions node to the scene, the transitions node will make itself as a persist node.
 2. Select a transition in the Properties Panel.
-3. Use **transitions.loadScene** instead of **cc.director.loadScene**
-example: 
+3. 
+
+- Transitions from scene to other scene : 
 ```js
-// transitions from scene to other scene
+// Use **transitions.loadScene** instead of **cc.director.loadScene**
 // cc.director.loadScene(url, this.onLoadSceneFinish.bind(this));
 this.transitions.loadScene(url, 'Canvas/Main Camera', 'Canvas/Main Camera', this.onLoadSceneFinish.bind(this));
+```
 
-// transitions from node to other node
+- Transition from node to other node :
+```js
 this.transitions.loadNode (fromCamera, fromRootNode, toCamera, toRootNode, onTransitionFinished)
 ```
 
