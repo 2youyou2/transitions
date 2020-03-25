@@ -1,0 +1,1 @@
+{"__type__":"cc.Material","_name":"directional-wipe-rt","_effectAsset":{"__uuid__":"62b2ZdocZKmoMlLVIdFNd6"},"_techniqueData":{"0":{"defines":{},"props":{"direction":{"__type__":"cc.Vec2","x":1,"y":1}}}}}
