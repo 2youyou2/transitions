@@ -1,0 +1,138 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+// Note: Current format version is experiment, the format may be changed.
+// The future format may not be compatible, you may need to update the script manually.
+
+// 注意：当前版本的格式是实验性的，之后还会进行修改。
+// 后续版本的格式不保证兼容当前格式，可能需要手动升级到最新版本。，
+CCEffect %{
+  commonPass: &commonPass
+    vert: vs
+    blendState:
+      targets:
+      - blend: true
+    rasterizerState:
+      cullMode: none
+    properties:
+      texture: { value: white }
+      texture2: { value: white }
+      time: { value: 0 }
+      ratio: { value: 0 }
+
+      center: { value: [0.5, 0.5] }
+  techniques:
+  - name: glass
+    passes:
+    - <<: *commonPass
+      frag: glass-fs
+}%
+
+CCProgram transition %{
+
+uniform Transition {
+  vec2 center;
+};
+// Author: gre
+// License: MIT
+
+const float smoothness = 0.15;
+const float PI = 3.141592653589793;
+const float PI_2 = PI * 2.0;
+
+float maxDistance = max(
+  max(distance(center, vec2(0., 0.)), distance(center, vec2(1., 1.))),
+  max(distance(center, vec2(0., 1.)), distance(center, vec2(1., 0.)))
+);
+
+vec2 ratio2 = vec2(1.0, 1.0 / ratio);
+
+vec4 transition (vec2 uv) {
+  vec2 dif = (uv - center) * ratio2;
+  float r = length(dif);
+  float m = 1. - smoothstep(-smoothness, 0.0, r - time*(maxDistance+smoothness));
+  uv = ripple(uv, dif, m, PI_2);
+  return mix(getFromColor(uv), getToColor(uv), m);
+}
+
+
+}%
+
+CCProgram vs %{
+
+precision highp float;
+
+#include <cc-global>
+#include <cc-local>
+
+in vec3 a_position;
+in lowp vec4 a_color;
+
+in mediump vec2 a_uv0;
+out mediump vec2 v_uv0;
+
+out lowp vec4 v_color;
+
+void main () {
+  mat4 mvp;
+  
+  mvp = cc_matViewProj;
+
+  v_uv0 = a_uv0;
+  v_color = a_color;
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+
+}%
+
+CCProgram common-fs %{
+
+uniform sampler2D texture;
+uniform sampler2D texture2;
+in mediump vec2 v_uv0;
+
+uniform Time {
+  float time;
+  float ratio;
+};
+
+in lowp vec4 v_color;
+
+vec4 getFromColor(vec2 uv) {
+  return texture(texture, uv);
+}
+
+vec4 getToColor(vec2 uv) {
+  return texture(texture2, uv);
+}
+
+#include <transition>
+
+void main () {
+  gl_FragColor = v_color * transition(v_uv0);
+}
+
+}%
+
+
+CCProgram glass-fs %{
+  precision highp float;
+
+  vec2 ripple (vec2 uv, vec2 dif, float m, float PI_2) {
+    //Polar coordinates
+    float theta = atan(dif.y, dif.x);
+    
+    //Make a pulse down the radius
+    float pulse = sin(m*PI_2);
+    
+    //Convert Polar -> Rectangular
+    vec2 pulse_rect = vec2(pulse * cos(theta), pulse * sin(theta));
+    
+    //use the pulse to distort the texture.
+    uv += 0.1 * pulse_rect;
+
+    return uv;
+  }
+
+  #include <common-fs>
+}%

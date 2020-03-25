@@ -1,0 +1,18 @@
+{
+  "__type__": "cc.Material",
+  "_name": "doorway-vertical",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "08a2055a-7cea-42e4-b7e2-38e8cfef31aa"
+  },
+  "_techniqueIndex": 1,
+  "_techniqueData": {
+    "0": {
+      "defines": {},
+      "props": {
+        "depth": 6
+      }
+    }
+  }
+}

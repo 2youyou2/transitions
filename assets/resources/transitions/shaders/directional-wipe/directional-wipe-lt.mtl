@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.Material",
+  "_name": "directional-wipe-lb - 001",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "626f665d-a1c6-4a9a-8325-2d521d14d77a"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {},
+      "props": {
+        "direction": {
+          "__type__": "cc.Vec2",
+          "x": -1,
+          "y": 1
+        }
+      }
+    }
+  }
+}
